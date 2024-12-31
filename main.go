@@ -69,7 +69,7 @@ func handleUI() http.Handler {
 			http.Error(w, "Error reading file", http.StatusInternalServerError)
 			return
 		}
-		modifiedContent := strings.ReplaceAll(string(fileContent), "firestore.googleapis.com", "localhost:3002")
+		modifiedContent := strings.ReplaceAll(string(fileContent), "firestore.googleapis.com", "excalidraw.jekuari.mx")
 		modifiedContent = strings.ReplaceAll(modifiedContent, "ssl=!0", "ssl=0")
 		modifiedContent = strings.ReplaceAll(modifiedContent, "ssl:!0", "ssl:0")
 
@@ -128,6 +128,7 @@ func setupRouter(documentStore core.DocumentStore) *chi.Mux {
 	})
 	return r
 }
+
 func setupSocketIO() *socketio.Server {
 	opts := socketio.DefaultServerOptions()
 	opts.SetMaxHttpBufferSize(5000000)
@@ -167,7 +168,6 @@ func setupSocketIO() *socketio.Server {
 					"room-user-change",
 					newRoomUsers,
 				)
-
 			})
 		})
 		socket.On("server-broadcast", func(datas ...any) {
@@ -183,7 +183,6 @@ func setupSocketIO() *socketio.Server {
 
 		socket.On("user-follow", func(datas ...any) {
 			// TODO()
-
 		})
 		socket.On("disconnecting", func(datas ...any) {
 			for _, currentRoom := range socket.Rooms().Keys() {
@@ -203,11 +202,8 @@ func setupSocketIO() *socketio.Server {
 						)
 
 					}
-
 				})
-
 			}
-
 		})
 		socket.On("disconnect", func(datas ...any) {
 			socket.RemoveAllListeners("")
@@ -215,7 +211,6 @@ func setupSocketIO() *socketio.Server {
 		})
 	})
 	return ioo
-
 }
 
 func waitForShutdown(ioo *socketio.Server) {
@@ -244,7 +239,7 @@ func waitForShutdown(ioo *socketio.Server) {
 func main() {
 	// Define a log level flag
 	logLevel := flag.String("loglevel", "info", "Set the logging level: debug, info, warn, error, fatal, panic")
-    listenAddr := flag.String("listen", ":3002", "Set the server listen address")
+	listenAddr := flag.String("listen", ":3002", "Set the server listen address")
 	flag.Parse()
 
 	// Set the log level
@@ -276,5 +271,4 @@ func main() {
 
 	logrus.Debug("Server is running in the background")
 	waitForShutdown(ioo)
-
 }
